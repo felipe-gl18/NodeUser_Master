@@ -1,6 +1,10 @@
+
+// CONFIG 
+
 const express = require('express');
 const route = express.Router();
 const User = require('../models/User');
+const notification = require('../notification/notification');
 
 // <<<---RENDERENIZANDO O CRUD--->>>
 
@@ -48,17 +52,19 @@ route.get('/deletarUser', async(req,res)=>{
 
 // <<<---CRUD--->>>
 
-// CREATE USER
+// CREATE USER and CALLING THE NOTIFICATION 
 
 route.post('/addUser', async(req,res)=> {
     const newUser = new User(
         {
             name: req.body.name,
             email: req.body.email,
-            password: req.body.senha
+            password: req.body.password
         }
     );
+
     try {
+        notification();
         const SavedUser = await newUser.save();
         res.send(SavedUser +'<br>The user sign up with success');
     }catch(err) {
@@ -91,10 +97,12 @@ route.post('/updateUser', async(req,res)=>{
                 password: req.body.password
             }
         );
-        res.send('User changed')
+        res.send('User changed');
+
     }catch(err){
         console.log({message:err});
     }
+
 });
 
 //DELETE USER
@@ -107,9 +115,11 @@ route.post('/deleteUser', async(req,res)=>{
             }
         );
         res.send('User Removed');
+
     }catch(err){
         console.log({message:err});
     }
+
 });
 
 module.exports = route;
